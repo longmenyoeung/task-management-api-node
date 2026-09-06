@@ -5,6 +5,7 @@ import userRoute from "./src/routes/User.route.js";
 import morgan from "morgan";
 import helmet from "helmet";
 import projectRoute from './src/routes/project.route.js';
+import taskRoute from './src/routes/Task.route.js';
 
 const app = express();
 //PORT
@@ -23,6 +24,7 @@ connectDB();
 //router
 app.use('/api/users', userRoute);
 app.use('/api/projects', projectRoute);
+app.use('/api/tasks', taskRoute);
 
 
 app.listen(port, () => {

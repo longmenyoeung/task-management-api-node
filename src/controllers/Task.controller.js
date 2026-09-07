@@ -52,9 +52,9 @@ export const createTask  = async (req, res) => {
             description, 
             priority,
             project,
-            user
+            assignedTo
         });
-        
+
         return res.status(201).json({
             success: true,
             message:"Task created successfully.",

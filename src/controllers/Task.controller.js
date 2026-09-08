@@ -3,18 +3,21 @@ import ProjectModel from "../models/ProjectModel.js";
 import TaskModel from "../models/TaskModel.js";
 import UserModel from "../models/UserModel.js";
 
-export const getListTask = async (req,res) => {
-    try {
-        const tasks = await TaskModel.find({});
 
-        if(tasks.length === 0) {return res.status(200).json({message: 'No data found.'})}
+export const getListTask = async (req, res) => {
+    try {
+        const tasks = await TaskModel.find({})
+            .populate("project")
+            .populate("assignedTo", "username email");
+
+        if (tasks.length === 0) { return res.status(200).json({ message: 'No data found.' }) }
 
         return res.status(200).json({
             success: true,
             message: 'Get list tasks successfully.',
-            task:tasks 
+            task: tasks
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -24,13 +27,13 @@ export const getListTask = async (req,res) => {
     }
 }
 
-export const createTask  = async (req, res) => {
+export const createTask = async (req, res) => {
     try {
-        const {title, description, priority, assignedTo} = req.body;
-        const {id} = req.params;
+        const { title, description, priority, assignedTo } = req.body;
+        const { id } = req.params;
 
         if (!title || !description || !priority || !assignedTo) {
-        return res.status(400).json({ message: "Missing required fields." });
+            return res.status(400).json({ message: "Missing required fields." });
         }
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -40,7 +43,7 @@ export const createTask  = async (req, res) => {
             return res.status(400).json({ message: "Invalid user ID format." });
         }
 
-        
+
         const project = await ProjectModel.findById(id);
         if (!project) return res.status(404).json({ message: "Project not found." });
 
@@ -48,8 +51,8 @@ export const createTask  = async (req, res) => {
         if (!user) return res.status(404).json({ message: "User not found." });
 
         const task = await TaskModel.create({
-            title, 
-            description, 
+            title,
+            description,
             priority,
             project,
             assignedTo
@@ -57,14 +60,86 @@ export const createTask  = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message:"Task created successfully.",
+            message: "Task created successfully.",
             task: task
         });
+
     } catch (error) {
         return res.status(500).json({
-            success : false,
+            success: false,
             message: "Server internal error.",
             error: error.message
+        });
+    }
+}
+
+export const updateTask = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description, status, priority, project, assignedTo } = req.body;
+        const updateData = { title, description, status, priority, project, assignedTo };
+
+        if(!mongoose.Types.ObjectId.isValid(id)){
+            return res.status(400).json({message:"Invalid format ID provided."})
+        }
+        if(!mongoose.Types.ObjectId.isValid(project)){
+            return res.status(400).json({message:"Invalid format ID provided."})
+        }
+
+        if(!mongoose.Types.ObjectId.isValid(assignedTo)){
+            return res.status(400).json({message:"Invalid format ID provided."})
+        }
+        
+        const task = await TaskModel.findById(id);
+        if(!task) {return res.status(404).json({message:"Task not found."})}
+
+        const projectId = await ProjectModel.findById(project);
+        if(!projectId) {return res.status(404).json({message:"Project not found."})}
+
+        const user = await UserModel.findById(assignedTo);
+        if(!user) {return res.status(404).json({message:"User not found."})}
+
+        const updated = await TaskModel.findByIdAndUpdate(
+            id,
+            updateData,
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        res.status(200).json({
+            success: true,
+            message:"Task updated successfully.",
+            task:updated
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Server internal error.",
+            error: error.message
+        });
+    }
+}
+
+export const deleteTask = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const task = await TaskModel.findByIdAndDelete(id)
+        if(!task){return res.status(404).json({message:"Task not found."})}
+
+        return res.status(200).json({
+            success: true,
+            message:"Task deleted successfully.",
+            task: task
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Server internal error.",
+            error:error.message
         });
     }
 }

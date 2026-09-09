@@ -9,8 +9,8 @@ import authorizeRoles from "../middleware/Authorizerole.js";
 const projectRoute = e.Router();
 
 projectRoute.get("/",authorizeRoles("admin"), getListProject);
-projectRoute.post("/",authorizeRoles("admin"),createProject);
-projectRoute.put("/:id", updateProject);
-projectRoute.delete('/:id', deleteProject);
+projectRoute.post("/",createProject);
+projectRoute.put("/:id",authorizeRoles("admin"), updateProject);
+projectRoute.delete('/:id',authorizeRoles("admin"),deleteProject);
 
 export default projectRoute;

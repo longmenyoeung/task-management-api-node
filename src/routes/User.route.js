@@ -9,10 +9,13 @@ import {
 import authorizeRoles from "../middleware/Authorizerole.js";
 const userRoute = express.Router();
 
+// ============= Public
+userRoute.post("/register", register);
+userRoute.post("/login", login);
+
+// ============= Private 
 userRoute.get("/",authorizeRoles('admin'), getList);
 userRoute.get("/:id",authorizeRoles('admin'), searchById);
-userRoute.post("/register", register);
 userRoute.delete("/:id",authorizeRoles('admin'),deleteUser);
-userRoute.post("/login", login);
 
 export default userRoute;

@@ -5,10 +5,11 @@ import {
     getListProject,
     updateProject,
 } from "../controllers/Project.controller.js";
+import authorizeRoles from "../middleware/Authorizerole.js";
 const projectRoute = e.Router();
 
-projectRoute.post("/", createProject);
-projectRoute.get("/", getListProject);
+projectRoute.get("/",authorizeRoles("admin"), getListProject);
+projectRoute.post("/",authorizeRoles("admin"),createProject);
 projectRoute.put("/:id", updateProject);
 projectRoute.delete('/:id', deleteProject);
 

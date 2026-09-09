@@ -6,7 +6,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import projectRoute from './src/routes/project.route.js';
 import taskRoute from './src/routes/Task.route.js';
-import { verifyToken } from './src/middleware/AuthMiddleware.js';
+import { AuthenticateJWT } from './src/middleware/AuthMiddleware.js';
 
 const app = express();
 //PORT
@@ -24,8 +24,8 @@ connectDB();
 
 //router
 app.use('/api/users', userRoute);
-app.use('/api/projects',verifyToken, projectRoute);
-app.use('/api/tasks',verifyToken, taskRoute);
+app.use('/api/projects',AuthenticateJWT, projectRoute);
+app.use('/api/tasks',AuthenticateJWT, taskRoute);
 
 
 app.listen(port, () => {

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import  UserModel  from "../models/UserModel.js";
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken'
 
 
 export const register = async (req, res) => {
@@ -26,7 +27,6 @@ export const register = async (req, res) => {
         });
 
 
-
         const userRepsone = user.toObject();
         delete userRepsone.password;
 
@@ -40,6 +40,57 @@ export const register = async (req, res) => {
         return res.status(500).json({
             message: 'Internal server error.'
         });
+    }
+}
+
+export const login = async (req, res) => {
+    try {
+        const {email, password} = req.body;
+
+        if(!email || !password) {
+            return res.status(400).json({
+                success : false,
+                message: "Email or password are required."
+            });
+        }
+
+        const user = await UserModel.findOne({email});
+        if(!user){
+            return res.status({
+                success: false,
+                message: "Email or password incorrect."
+            });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if(!isMatch){
+            return res.status(400).json({
+                success: false,
+                message: "Email or password incorrect."
+            })
+        }
+
+        //sign token
+        const secret  = process.env.JWT_SECRET;
+        const accessToken = jwt.sign(
+            {
+                sub:user._id,
+                email:user.email
+            },secret,
+            {expiresIn: '15m'}
+        )
+
+        return res.json({
+            success:true,
+            token : accessToken
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Server internal error.",
+            error: error.message
+        })
     }
 }
 

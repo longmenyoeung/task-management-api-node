@@ -40,6 +40,11 @@ app.use(
     })
 );
 
+// Redirect root to Swagger documentation
+app.get("/", (req, res) => {
+    res.redirect("/api/docs");
+});
+
 // Raw OpenAPI JSON spec endpoint
 app.get("/api/docs.json", (req, res) => {
     res.setHeader("Content-Type", "application/json");

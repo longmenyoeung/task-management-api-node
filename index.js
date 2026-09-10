@@ -7,14 +7,16 @@ import helmet from "helmet";
 import projectRoute from "./src/routes/Project.route.js";
 import taskRoute from "./src/routes/Task.route.js";
 import { AuthenticateJWT } from "./src/middleware/AuthMiddleware.js";
+import cors from "cors";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from "./src/Swagger/swaggerConfig.js";
 
 const app = express();
-// PORT
-const port = process.env.PORT1 || process.env.PORT2 || 5000;
+// PORT (process.env.PORT is required by cloud hosts like Render, Railway, etc.)
+const port = process.env.PORT || process.env.PORT1 || process.env.PORT2 || 5000;
 
 // Middleware
+app.use(cors());
 // Disable contentSecurityPolicy in helmet so Swagger UI assets & scripts load properly
 app.use(
     helmet({

@@ -12,6 +12,10 @@ const options = {
         },
         servers: [
             {
+                url: "/",
+                description: "Current Host (Auto-detects Localhost or Deployed Domain)",
+            },
+            {
                 url: `http://localhost:${port}`,
                 description: "Local development server",
             },

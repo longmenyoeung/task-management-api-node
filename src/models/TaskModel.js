@@ -4,7 +4,7 @@ const taskSchema = new mongoose.Schema({
     title: {
         type:String,
         trim:true,
-        require:true
+        required:true
     },
     description: {
         type:String,
@@ -19,7 +19,7 @@ const taskSchema = new mongoose.Schema({
         type:String,
         trim: true,
         enum:['low', 'medium', 'high'],
-        default:''
+        default:'low'
     },
     project: {
         type:mongoose.Schema.Types.ObjectId,

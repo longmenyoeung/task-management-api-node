@@ -1,12 +1,21 @@
 import mongoose from "mongoose";
 import ProjectModel from "../models/ProjectModel.js";
 import UserModel from "../models/UserModel.js";
+import { Await } from "react-router-dom";
+import { CloudCog } from "lucide-react";
 
 export const createProject = async (req, res) => {
     try {
-        const {name, description, owner} = req.body;
+        const data = {name: req.body.name, 
+            description: req.body.description, 
+            owner:req.user._id
+        }
+        if(!mongoose.Types.ObjectId.isValid(data.owner)){
+            return res.status(400).json({message: "Invalid User ID format provided."})
+        }
 
-        const ownerId = await UserModel.findById(owner);
+
+        const ownerId = await UserModel.findById(data.owner);
         if(!ownerId){
             return res.status(404).json({
                 success: false,
@@ -14,12 +23,8 @@ export const createProject = async (req, res) => {
             });
         }
 
-        const project = new ProjectModel({
-            name, description, owner
-        });
+        const project = await ProjectModel.create(data);
 
-
-        await project.save();
 
         return res.status(201).json({
             success: true,
@@ -68,6 +73,11 @@ export const updateProject = async (req, res) => {
                 message: 'Invalid ID format provided.'
             });
         }
+
+
+        //verify that project owner
+
+
 
         const project = await ProjectModel.findByIdAndUpdate(
             id,

@@ -15,6 +15,14 @@ export const register = async (req, res) => {
             return res.status(400).json({message: 'User already existed.'});
         }
 
+
+        //if role admin already exist so it will cant create role admin more
+        const adminExisted = await UserModel.findOne({role:"admin"});
+        if(adminExisted){
+            //use this message becuase i dont need hacker know that role admin already exist
+            return res.status(400).json({message: 'Something went wrong. please try again later.'});
+        }
+
          //create user
         const saltRouds = 10;
         const passwordHashed = await bcrypt.hash(password, saltRouds)
@@ -29,11 +37,12 @@ export const register = async (req, res) => {
 
         const userRepsone = user.toObject();
         delete userRepsone.password;
+        delete userRepsone.role;
 
         return res.status(201).json({
             success: true, 
             message: `User registered successfully.`,
-            user: user
+            user: userRepsone
         });
 
     } catch (error) {
@@ -56,7 +65,7 @@ export const login = async (req, res) => {
 
         const user = await UserModel.findOne({email});
         if(!user){
-            return res.status({
+            return res.status(404).json({
                 success: false,
                 message: "Email or password incorrect."
             });
@@ -96,7 +105,8 @@ export const login = async (req, res) => {
 
 export const getList = async (req, res) => {
     try {
-        const user = await UserModel.find({});
+        const user = await UserModel.find({})
+                                    .select('-password -role');
 
         if(user.length === 0) {
             return res.status(200).json({message:'user is empty.'})
@@ -111,7 +121,9 @@ export const getList = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({
-            message: 'Internal server error.'
+            success:false,
+            message: 'Internal server error.',
+            error: error.message
         });
     }
 }
@@ -127,7 +139,7 @@ export const searchById = async (req, res) => {
             });
         }
         
-        const user = await UserModel.findById(id);
+        const user = await UserModel.findById(id).select('-password -role');
 
         if (!user) {
             return res.status(404).json({ 
@@ -152,6 +164,9 @@ export const searchById = async (req, res) => {
 export const deleteUser = async (req, res) => {
     try {
         const {id} = req.params;
+        const isActive =  {
+            isActive: req.body.isActive
+        }
 
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({
@@ -160,7 +175,7 @@ export const deleteUser = async (req, res) => {
             });
         }
 
-        const user = await UserModel.findByIdAndDelete(id);
+        const user = await UserModel.findByIdAndUpdate(id,isActive,{new: true, runValidators:true});
         if(!user){
             return res.status(404).json({
                 success : false,
@@ -171,10 +186,10 @@ export const deleteUser = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: 'User deleted successfully.',
-            user:user
+            user:user._id
         });
 
     } catch (error) {
-        return res.status(500).json({message:"Internal server error."});
+        return res.status(500).json({message:"Internal server error.", error:error.message});
     }
 }

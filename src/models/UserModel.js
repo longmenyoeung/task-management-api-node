@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type:String,
         trim:true,
-        min:8,
+        minlength:8,
         required: true
     },
     isActive: {

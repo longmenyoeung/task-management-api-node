@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import ProjectModel from "../models/ProjectModel.js";
 import UserModel from "../models/UserModel.js";
-import { Await } from "react-router-dom";
-import { CloudCog } from "lucide-react";
+
 
 export const createProject = async (req, res) => {
     try {
@@ -63,7 +62,8 @@ export const updateProject = async (req, res) => {
 
         const updateData = {
             name :req.body.name,
-            description: req.body.description
+            description: req.body.description,
+            owner:req.user._id
         }
 
         // 1. Structural Verification: Guard against malformed MongoDB IDs
@@ -73,21 +73,21 @@ export const updateProject = async (req, res) => {
                 message: 'Invalid ID format provided.'
             });
         }
+        const project = await ProjectModel.findById(id);
 
+        if(!project){
+            return res.status(404).json({message: 'Project not found.'});
+        }
 
-        //verify that project owner
+        if(updateData.owner.toString() !== project.owner._id.toString()){
+            return res.status(400).json({success: false, message: "Invalid owner or user not found"})
+        }
 
+        //update data
+        project.name = updateData.name;
+        project.description = updateData.description;
+        await project.save();
 
-
-        const project = await ProjectModel.findByIdAndUpdate(
-            id,
-            updateData,{
-                new: true,
-                runValidators: true
-            }
-        );
-
-        if(!project){return res.status(404).json({message:'Project not found.'})}
 
         return res.status(200).json({
             success: true,
@@ -107,22 +107,33 @@ export const updateProject = async (req, res) => {
 export const deleteProject = async (req, res) => {
     try {
         const {id} = req.params;
+       
 
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({message: 'Invalid ID format provided.'});
         }
 
+ 
+        const project = await ProjectModel.findById(id);
 
-        const project = await ProjectModel.findByIdAndDelete(id);
+        if(project.owner._id.toString() !== req.user._id.toString()){
+            return res.status(400).json({success: false, message: "Invalid owner or user not found"})
+        }
+
         if(!project) {
             return res.status(404).json({message: 'Project not found.'});
         }
+
+        //delete project 
+        await project.deleteOne();
 
         return res.status(200).json({
             success: true,
             message : "Project deleted successfully.",
             project: project
         });
+
+
     } catch (error) {
         return res.status(500).json({
             success: false,

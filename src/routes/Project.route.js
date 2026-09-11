@@ -5,6 +5,7 @@ import {
     getListProject,
     updateProject,
 } from "../controllers/Project.controller.js";
+import { AuthenticateJWT } from "../middleware/AuthMiddleware.js";
 
 const projectRoute = e.Router();
 
@@ -58,7 +59,7 @@ const projectRoute = e.Router();
  *       500:
  *         description: Internal server error
  */
-projectRoute.post("/", createProject);
+projectRoute.post("/",AuthenticateJWT, createProject);
 
 
 /**

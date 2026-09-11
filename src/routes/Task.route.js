@@ -185,6 +185,6 @@ taskRoute.put('/:id',AuthenticateJWT,  updateTask);
  *       500:
  *         description: Server internal error
  */
-taskRoute.delete('/:id', deleteTask);
+taskRoute.delete('/:id', AuthenticateJWT, deleteTask);
 
 export default taskRoute;

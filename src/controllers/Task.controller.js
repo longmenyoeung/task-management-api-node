@@ -29,7 +29,7 @@ export const getListTask = async (req, res) => {
 
 export const createTask = async (req, res) => {
     try {
-        const { title, description, priority, assignedTo } = req.body;
+        const { title, description, priority, assignedTo} = req.body;
         const { id } = req.params;
 
         if (!title || !description || !priority || !assignedTo) {
@@ -39,17 +39,20 @@ export const createTask = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ message: "Invalid project ID format." });
         }
-        if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
-            return res.status(400).json({ message: "Invalid user ID format." });
-        }
-
-
         const project = await ProjectModel.findById(id);
         if (!project) return res.status(404).json({ message: "Project not found." });
 
+        if(project.owner._id.toString() === assignedTo.toString()){
+            return res.status(400).json({message: "The assigned user cannot be the same as the project owner."})
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
+            return res.status(400).json({ message: "Invalid user ID format." });
+        }
         const user = await UserModel.findById(assignedTo);
         if (!user) return res.status(404).json({ message: "User not found." });
 
+    
         const task = await TaskModel.create({
             title,
             description,
@@ -76,43 +79,43 @@ export const createTask = async (req, res) => {
 export const updateTask = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, status, priority, project, assignedTo } = req.body;
-        const updateData = { title, description, status, priority, project, assignedTo };
+        const { title, description, status, priority } = req.body;
+        const updateData = { title, description, status, priority};
 
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({message:"Invalid format ID provided."})
         }
-        if(!mongoose.Types.ObjectId.isValid(project)){
-            return res.status(400).json({message:"Invalid format ID provided."})
-        }
 
-        if(!mongoose.Types.ObjectId.isValid(assignedTo)){
-            return res.status(400).json({message:"Invalid format ID provided."})
-        }
-        
-        const task = await TaskModel.findById(id);
+        const task = await TaskModel.findById(id).populate('project').populate('assignedTo', "_id")
+
         if(!task) {return res.status(404).json({message:"Task not found."})}
 
-        const projectId = await ProjectModel.findById(project);
-        if(!projectId) {return res.status(404).json({message:"Project not found."})}
+        // console.log("Logged user:", req.user._id);
+        // console.log("Project owner:", task.project.owner._id.toString());
+        // console.log("assingedTo User :",task.assignedTo._id.toString())
 
-        const user = await UserModel.findById(assignedTo);
-        if(!user) {return res.status(404).json({message:"User not found."})}
+        if(req.user._id.toString() === task.project.owner._id.toString() || 
+            req.user._id.toString() === task.assignedTo._id.toString()
+            // || req.user.role === "admin"
+        ){
+            var updated = await TaskModel.findByIdAndUpdate(
+                id,
+                updateData,
+                {
+                    new: true,
+                    runValidators: true
+                }
+            );
 
-        const updated = await TaskModel.findByIdAndUpdate(
-            id,
-            updateData,
-            {
-                new: true,
-                runValidators: true
-            }
-        );
-
-        res.status(200).json({
-            success: true,
-            message:"Task updated successfully.",
-            task:updated
-        });
+            res.status(200).json({
+                success: true,
+                message:"Task updated successfully.",
+                task:updated
+            });
+             
+        }else{
+            return res.status(400).json({messge: "Only project owner and assigned user can update the task."}); 
+        }
 
     } catch (error) {
         return res.status(500).json({
@@ -126,14 +129,24 @@ export const updateTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
     try {
         const {id} = req.params;
-        const task = await TaskModel.findByIdAndDelete(id)
+        const task = await TaskModel.findById(id).populate('project').populate('assignedTo', '_id')
+
         if(!task){return res.status(404).json({message:"Task not found."})}
 
-        return res.status(200).json({
-            success: true,
-            message:"Task deleted successfully.",
-            task: task
-        });
+        if(req.user._id.toString() === task.project.owner._id.toString() ||
+           req.user._id.toString() === task.assignedTo._id.toString()){
+
+            await task.deleteOne();
+            return res.status(200).json({
+                success: true,
+                message:"Task deleted successfully.",
+                task: task
+            });
+
+        }else{
+            return res.status(400).json({message: "Only project owner and assigned user can delete the task."});
+        }
+
 
     } catch (error) {
         return res.status(500).json({

@@ -32,10 +32,6 @@ const taskSchema = new mongoose.Schema({
         ref:'User',
         index: true,
         required: true
-    },
-    createAt :{
-        type: Date,
-        default : Date.now
     }
 },{
     timestamps : true,

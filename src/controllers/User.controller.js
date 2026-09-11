@@ -16,11 +16,14 @@ export const register = async (req, res) => {
         }
 
 
+       
         //if role admin already exist so it will cant create role admin more
+        if(role === "admin"){
         const adminExisted = await UserModel.findOne({role:"admin"});
         if(adminExisted){
             //use this message becuase i dont need hacker know that role admin already exist
             return res.status(400).json({message: 'Something went wrong. please try again later.'});
+        }
         }
 
          //create user

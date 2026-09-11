@@ -5,6 +5,7 @@ import {
     getListTask, 
     updateTask
 } from "../controllers/Task.controller.js";
+import { AuthenticateJWT } from "../middleware/AuthMiddleware.js";
 
 const taskRoute = e.Router();
 
@@ -93,7 +94,7 @@ taskRoute.get('/', getListTask);
  *       500:
  *         description: Server internal error
  */
-taskRoute.post('/:id/create', createTask);
+taskRoute.post('/:id/create', AuthenticateJWT, createTask);
 
 
 /**
@@ -154,7 +155,7 @@ taskRoute.post('/:id/create', createTask);
  *       500:
  *         description: Server internal error
  */
-taskRoute.put('/:id', updateTask);
+taskRoute.put('/:id',AuthenticateJWT,  updateTask);
 
 
 /**

@@ -53,8 +53,8 @@ app.get("/api/docs.json", (req, res) => {
 
 // Connect routes
 app.use("/api/users", userRoute);
-app.use("/api/projects", AuthenticateJWT, projectRoute);
-app.use("/api/tasks", AuthenticateJWT, taskRoute);
+app.use("/api/projects",  projectRoute);
+app.use("/api/tasks", taskRoute);
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

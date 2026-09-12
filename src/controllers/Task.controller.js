@@ -39,6 +39,11 @@ export const createTask = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ message: "Invalid project ID format." });
         }
+        if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
+            return res.status(400).json({ message: "Invalid user ID format." });
+        }
+
+
         const project = await ProjectModel.findById(id);
         if (!project) return res.status(404).json({ message: "Project not found." });
 
@@ -46,14 +51,11 @@ export const createTask = async (req, res) => {
             return res.status(400).json({message: "The assigned user cannot be the same as the project owner."})
         }
 
-        if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
-            return res.status(400).json({ message: "Invalid user ID format." });
-        }
         const user = await UserModel.findById(assignedTo);
         if (!user) return res.status(404).json({ message: "User not found." });
 
         if(req.user._id.toString() !== project.owner._id.toString()){
-            return res.status(400).json({message: "Only project owner can create task"});
+            return res.status(403).json({message: "Only project owner can create task"});
         }
 
         const task = await TaskModel.create({
@@ -101,7 +103,7 @@ export const updateTask = async (req, res) => {
             req.user._id.toString() === task.assignedTo._id.toString()
             // || req.user.role === "admin"
         ){
-            var updated = await TaskModel.findByIdAndUpdate(
+            const updated = await TaskModel.findByIdAndUpdate(
                 id,
                 updateData,
                 {
@@ -110,7 +112,7 @@ export const updateTask = async (req, res) => {
                 }
             );
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message:"Task updated successfully.",
                 task:updated
@@ -147,7 +149,7 @@ export const deleteTask = async (req, res) => {
             });
 
         }else{
-            return res.status(400).json({message: "Only project owner and assigned user can delete the task."});
+            return res.status(403).json({message: "Only project owner and assigned user can delete the task."});
         }
 
 

@@ -6,10 +6,11 @@ import morgan from "morgan";
 import helmet from "helmet";
 import projectRoute from "./src/routes/Project.route.js";
 import taskRoute from "./src/routes/Task.route.js";
-import { AuthenticateJWT } from "./src/middleware/AuthMiddleware.js";
 import cors from "cors";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from "./src/Swagger/swaggerConfig.js";
+import { notFound } from "./src/utils/ErrorMessage.js";
+import errorHandler from "./src/middleware/ErrorHandler.js";
 
 const app = express();
 // PORT (process.env.PORT is required by cloud hosts like Render, Railway, etc.)
@@ -55,6 +56,18 @@ app.get("/api/docs.json", (req, res) => {
 app.use("/api/users", userRoute);
 app.use("/api/projects",  projectRoute);
 app.use("/api/tasks", taskRoute);
+
+
+
+
+
+//Fallback for unhandled endpoints
+// app.use((req, res, next) => {
+//     next(new notFound(`Can't find ${req.originalUrl} on this server!`));
+// });
+
+// Global error hadling middleware MUST be placed last
+// app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

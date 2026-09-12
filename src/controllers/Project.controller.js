@@ -9,18 +9,19 @@ export const createProject = async (req, res) => {
             description: req.body.description, 
             owner:req.user._id
         }
-        if(!mongoose.Types.ObjectId.isValid(data.owner)){
-            return res.status(400).json({message: "Invalid User ID format provided."})
-        }
+
+        // if(!mongoose.Types.ObjectId.isValid(data.owner)){
+        //     return res.status(400).json({message: "Invalid User ID format provided."})
+        // }
 
 
-        const ownerId = await UserModel.findById(data.owner);
-        if(!ownerId){
-            return res.status(404).json({
-                success: false,
-                message: 'User ID not found or Invalid User ID.'
-            });
-        }
+        // const ownerId = await UserModel.findById(data.owner);
+        // if(!ownerId){
+        //     return res.status(404).json({
+        //         success: false,
+        //         message: 'User ID not found or Invalid User ID.'
+        //     });
+        // }
 
         const project = await ProjectModel.create(data);
 
@@ -115,13 +116,12 @@ export const deleteProject = async (req, res) => {
 
  
         const project = await ProjectModel.findById(id);
-
-        if(project.owner._id.toString() !== req.user._id.toString()){
-            return res.status(400).json({success: false, message: "Invalid owner or user not found"})
+           if(!project) {
+            return res.status(404).json({message: 'Project not found.'});
         }
 
-        if(!project) {
-            return res.status(404).json({message: 'Project not found.'});
+        if(project.owner._id.toString() !== req.user._id.toString()){
+            return res.status(403).json({success: false, message: "Invalid owner or user not found"})
         }
 
         //delete project 

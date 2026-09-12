@@ -101,7 +101,7 @@ export const login = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Server internal error.",
-            error: error.message
+            // error: error.message //Never send to user in Production.
         })
     }
 }

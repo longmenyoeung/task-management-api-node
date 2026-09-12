@@ -36,7 +36,7 @@ const taskRoute = e.Router();
  *       500:
  *         description: Server internal error
  */
-taskRoute.get('/', getListTask);
+taskRoute.get('/',AuthenticateJWT, getListTask);
 
 
 /**

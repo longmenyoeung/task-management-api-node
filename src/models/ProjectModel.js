@@ -15,10 +15,6 @@ const projectSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
         index:true
-    },
-    createdAt :{
-        type: Date,
-        default: Date.now
     }
 },{
     timestamps: true,

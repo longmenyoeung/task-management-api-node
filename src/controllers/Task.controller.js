@@ -2,20 +2,32 @@ import mongoose from "mongoose";
 import ProjectModel from "../models/ProjectModel.js";
 import TaskModel from "../models/TaskModel.js";
 import UserModel from "../models/UserModel.js";
+import { populate } from "dotenv";
 
 
 export const getListTask = async (req, res) => {
     try {
-        const tasks = await TaskModel.find({}) 
-        .populate("project")
-        .populate("assignedTo", "username email");
+        // const tasks = await TaskModel.find({}) 
+        // .populate("project")
+        // .populate("assignedTo", "username email");
 
-        if (tasks.length === 0) { return res.status(200).json({ message: 'No data found.' }) }
+        // if (tasks.length === 0) { return res.status(200).json({ message: 'No data found.' }) }
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const tasks = await TaskModel.paginate(
+            {},
+            {
+                page,
+                limit,
+                populate : [{path:'project'}, {path:'assignedTo', select: 'username email'}]
+            }
+        )
 
         return res.status(200).json({
             success: true,
-            message: 'Get list tasks successfully.',
-            task: tasks
+            ...tasks
         });
 
     } catch (error) {

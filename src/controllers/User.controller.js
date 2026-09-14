@@ -108,18 +108,29 @@ export const login = async (req, res) => {
 
 export const getList = async (req, res) => {
     try {
-        const user = await UserModel.find({})
-                                    .select('-password -role');
+        // const user = await UserModel.find({})
+        //                             .select('-password -role');
 
-        if(user.length === 0) {
-            return res.status(200).json({message:'user is empty.'})
-        }
+        // if(user.length === 0) {
+        //     return res.status(200).json({message:'user is empty.'})
+        // }
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const users = await UserModel.paginate(
+            {},
+           {
+                page,
+                limit,
+                select: '-password -role'
+           }
+        )
 
 
         res.status(200).json({
             success: true,
-            message: "get all users successfully.",
-            user:user
+           ...users
         });
 
     } catch (error) {

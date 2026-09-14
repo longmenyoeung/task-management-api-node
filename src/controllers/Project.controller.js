@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import ProjectModel from "../models/ProjectModel.js";
 import UserModel from "../models/UserModel.js";
+import { populate } from "dotenv";
 
 
 export const createProject = async (req, res) => {
@@ -48,8 +49,15 @@ export const getListProject = async (req, res) => {
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
-
-        const projects = await ProjectModel.paginate('', {page, limit});
+ 
+        const projects = await ProjectModel.paginate(
+            {}, 
+            {
+                page, 
+                limit,
+                populate: {path :'owner', select: 'username email'}
+            }
+        );
 
         return res.status(200).json({
             success: true,

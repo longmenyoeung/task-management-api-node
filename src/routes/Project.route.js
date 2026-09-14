@@ -6,6 +6,10 @@ import {
     updateProject,
 } from "../controllers/Project.controller.js";
 import { AuthenticateJWT } from "../middleware/AuthMiddleware.js";
+import { 
+    createProjectValidator, 
+    updateProjectValidator
+ }from "../validators/projectValidator.js";
 
 const projectRoute = e.Router();
 
@@ -53,7 +57,7 @@ const projectRoute = e.Router();
  *       500:
  *         description: Something went wrong, please try again.
  */
-projectRoute.post("/",AuthenticateJWT, createProject);
+projectRoute.post("/",createProjectValidator, AuthenticateJWT, createProject);
 
 
 /**
@@ -157,7 +161,7 @@ projectRoute.get("/",AuthenticateJWT, getListProject);
  *       500:
  *         description: Internal server error
  */
-projectRoute.put("/:id",AuthenticateJWT, updateProject);
+projectRoute.put("/:id",updateProjectValidator,AuthenticateJWT, updateProject);
 
 
 /**

@@ -39,21 +39,33 @@ export const createProject = async (req, res) => {
 
 export const getListProject = async (req, res) => {
     try {
-        const projects = await ProjectModel.find({})
-                                            .populate('owner', 'username email')
-        if(projects.length===0){return res.json({message:'Project is empty.'})}
+        // const projects = await ProjectModel.find({})
+        //                                     .populate('owner', 'username email')
+                                            
+        // if(projects.length===0){return res.json({message:'Project is empty.'})}
+        // let query ={};
 
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const projects = await ProjectModel.paginate('', {page, limit});
 
         return res.status(200).json({
             success: true,
-            message: 'Get all list project successfully.',
-            projects:projects
+            // appliedFilters: query,
+            ...projects
         })
 
     } catch (error) {
         return res.status(500).json({message: 'Internal server error', error:error.message})
     }
 }
+
+
+
+
+
 
 export const updateProject = async (req, res) => {
     try {

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const projectSchema = new mongoose.Schema({
     name:{
@@ -21,5 +22,6 @@ const projectSchema = new mongoose.Schema({
     collection: 'projects'
 });
 
+projectSchema.plugin(mongoosePaginate);
 const ProjectModel = mongoose.model('Project', projectSchema);
 export default ProjectModel;

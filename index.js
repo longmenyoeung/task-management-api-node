@@ -1,4 +1,4 @@
-import pkg from "dotenv/config.js";
+import "dotenv/config.js";
 import express from "express";
 import connectDB from "./src/config/db.js";
 import userRoute from "./src/routes/User.route.js";

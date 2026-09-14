@@ -75,10 +75,10 @@ userRoute.post("/register", register);
  *             properties:
  *               email:
  *                 type: string
- *                 example: john@example.com
+ *                 example: men@example.com
  *               password:
  *                 type: string
- *                 example: secret123
+ *                 example: men12345
  *     responses:
  *       200:
  *         description: Login successful, returns JWT token
@@ -94,9 +94,9 @@ userRoute.post("/register", register);
  *                   type: string
  *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *       400:
- *         description: Invalid credentials or missing fields
+ *         description: Email or password incorrect
  *       500:
- *         description: Server internal error
+ *         description: Something went wrong, please try again.
  */
 userRoute.post("/login", login);
 

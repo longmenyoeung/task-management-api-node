@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 import ProjectModel from "../models/ProjectModel.js";
 import UserModel from "../models/UserModel.js";
-import { populate } from "dotenv";
+
+
 
 
 export const createProject = async (req, res) => {
     try {
-        const data = {name: req.body.name, 
+        const data = {
+            name: req.body.name, 
             description: req.body.description, 
             owner:req.user._id
         }
@@ -78,30 +80,30 @@ export const getListProject = async (req, res) => {
 export const updateProject = async (req, res) => {
     try {
         const {id} = req.params;
-        // const {name, description} = req.body; //1. Extract variables
-        // const updateData = {name, description}; //2. Bundle them into a clean object
-
+       
         const updateData = {
             name :req.body.name,
             description: req.body.description,
-            owner:req.user._id
+            owner:req.user._id.toString()
         }
 
-        // 1. Structural Verification: Guard against malformed MongoDB IDs
+        
+
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({
                 success: false,
                 message: 'Invalid ID format provided.'
             });
         }
-        const project = await ProjectModel.findById(id);
+
+        const project = await ProjectModel.findById(id).populate('owner');
 
         if(!project){
             return res.status(404).json({message: 'Project not found.'});
-        }
+        }   
 
-        if(updateData.owner.toString() !== project.owner._id.toString()){
-            return res.status(400).json({success: false, message: "Invalid owner or user not found"})
+        if(updateData.owner !== project.owner._id.toString()){
+            return res.status(403).json({success: false, message: "Only user whos created in this project can update."})
         }
 
         //update data
@@ -141,7 +143,7 @@ export const deleteProject = async (req, res) => {
         }
 
         if(project.owner._id.toString() !== req.user._id.toString()){
-            return res.status(403).json({success: false, message: "Invalid owner or user not found"})
+            return res.status(400).json({success: false, message: "Only user whos created in this project can delete."})
         }
 
         //delete project 

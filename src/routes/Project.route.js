@@ -44,20 +44,14 @@ const projectRoute = e.Router();
  *               description:
  *                 type: string
  *                 example: Build an online shopping platform
- *               owner:
- *                 type: string
- *                 description: MongoDB ObjectId of the user who owns the project
- *                 example: 66d123456789abcdef123456
  *
  *     responses:
  *       201:
  *         description: Project created successfully
  *       401:
  *         description: Unauthorized - missing or invalid token
- *       404:
- *         description: User ID not found or invalid User ID
  *       500:
- *         description: Internal server error
+ *         description: Something went wrong, please try again.
  */
 projectRoute.post("/",AuthenticateJWT, createProject);
 
@@ -116,7 +110,7 @@ projectRoute.post("/",AuthenticateJWT, createProject);
  *       500:
  *         description: Internal server error
  */
-projectRoute.get("/", getListProject);
+projectRoute.get("/",AuthenticateJWT, getListProject);
 
 
 /**
@@ -163,7 +157,7 @@ projectRoute.get("/", getListProject);
  *       500:
  *         description: Internal server error
  */
-projectRoute.put("/:id", updateProject);
+projectRoute.put("/:id",AuthenticateJWT, updateProject);
 
 
 /**
@@ -196,7 +190,7 @@ projectRoute.put("/:id", updateProject);
  *       500:
  *         description: Internal server error
  */
-projectRoute.delete("/:id", deleteProject);
+projectRoute.delete("/:id",AuthenticateJWT, deleteProject);
 
 
 

@@ -8,6 +8,7 @@ import {
 } from "../controllers/User.controller.js";
 import { AuthenticateJWT } from "../middleware/AuthMiddleware.js";
 import authorizeRoles from "../middleware/Authorizerole.js";
+import { createUserValidator } from "../validators/userValidator.js";
 
 const userRoute = express.Router();
 
@@ -54,7 +55,7 @@ const userRoute = express.Router();
  *       500:
  *         description: Internal server error
  */
-userRoute.post("/register", register);
+userRoute.post("/register", createUserValidator, register);
 
 /**
  * @swagger

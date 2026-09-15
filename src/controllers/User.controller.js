@@ -75,6 +75,13 @@ export const login = async (req, res) => {
             });
         }
 
+        if(user.isActive === false){
+            return res.status(403).json({
+                success: false,
+                message: "This account has been deactived or deleted. please contect support."
+            })
+        }
+
         const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch){
             return res.status(400).json({
@@ -172,9 +179,6 @@ export const searchById = async (req, res) => {
 export const deleteUser = async (req, res) => {
     try {
         const {id} = req.params;
-        const isActive =  {
-            isActive: req.body.isActive
-        }
 
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({
@@ -182,8 +186,8 @@ export const deleteUser = async (req, res) => {
                 message: "Invalid format provide."
             });
         }
-
-        const user = await UserModel.findByIdAndUpdate(id,isActive,{new: true, runValidators:true});
+ 
+        const user = await UserModel.findByIdAndUpdate(id,{isActive: false}, {new:true,runValidators:true}).select('-password -role');
         if(!user){
             return res.status(404).json({
                 success : false,
@@ -198,6 +202,10 @@ export const deleteUser = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({message:"Internal server error.", error:error.message});
+        return res.status(500).json({
+            success: false,
+            message : "Something went wrong. please try again later.",
+            // error:error.message //close message to front-end for more secure.
+        });
     }
 }

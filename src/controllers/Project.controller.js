@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 import ProjectModel from "../models/ProjectModel.js";
-import UserModel from "../models/UserModel.js";
-
 
 
 
@@ -36,7 +34,13 @@ export const createProject = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({message:'Internal server error.',error:error.message});
+        return res.status(500).json(
+            {
+                success: false,
+                message:'createProject failed. please try again.',
+                // error:error.message 
+            }
+        );
     }
 }
 
@@ -68,14 +72,14 @@ export const getListProject = async (req, res) => {
         })
 
     } catch (error) {
-        return res.status(500).json({message: 'Internal server error', error:error.message})
+        return res.status(500).json(
+            {   
+                success: false,
+                message: "get all projects failed. please try again.",
+                // error:error.message
+            })
     }
 }
-
-
-
-
-
 
 export const updateProject = async (req, res) => {
     try {
@@ -86,8 +90,6 @@ export const updateProject = async (req, res) => {
             description: req.body.description,
             owner:req.user._id.toString()
         }
-
-        
 
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({
@@ -121,8 +123,8 @@ export const updateProject = async (req, res) => {
     }catch (error) {
         return res.status(500).json({
             success: false,
-            message:'Server internal error.',
-            error:error.message
+            message:'updateProject failed. please try again.',
+            // error:error.message
         });
     }
 }
@@ -159,8 +161,8 @@ export const deleteProject = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Server internal error.",
-            error: error.message
+            message: "deleteProject failed. please try again.",
+            // error: error.message
         });
     }
 }

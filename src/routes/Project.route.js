@@ -57,7 +57,7 @@ const projectRoute = e.Router();
  *       500:
  *         description: Something went wrong, please try again.
  */
-projectRoute.post("/",createProjectValidator, AuthenticateJWT, createProject);
+projectRoute.post("/", AuthenticateJWT,createProjectValidator, createProject);
 
 
 /**
@@ -161,7 +161,7 @@ projectRoute.get("/",AuthenticateJWT, getListProject);
  *       500:
  *         description: Internal server error
  */
-projectRoute.put("/:id",updateProjectValidator,AuthenticateJWT, updateProject);
+projectRoute.put("/:id",AuthenticateJWT,updateProjectValidator, updateProject);
 
 
 /**

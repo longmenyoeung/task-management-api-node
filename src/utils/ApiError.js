@@ -1,6 +1,6 @@
 
 class ApiError extends Error {
-    constructor (statusCode, message ){
+    constructor (statusCode, message , isOptinal = true){
         super(message);
         this.statusCode = statusCode;
         
@@ -9,7 +9,7 @@ class ApiError extends Error {
         this.isOptinal = isOptinal;
       
         Error.captureStackTrace(this, this.constructor);
-     
+      
     }
 
 }

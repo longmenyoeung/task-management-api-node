@@ -95,7 +95,7 @@ taskRoute.get('/',AuthenticateJWT, getListTask);
  *       500:
  *         description: Server internal error
  */
-taskRoute.post('/:id/create',createTaskValidate, AuthenticateJWT, createTask);
+taskRoute.post('/:id/create', AuthenticateJWT,createTaskValidate, createTask);
 
 
 /**
@@ -156,7 +156,7 @@ taskRoute.post('/:id/create',createTaskValidate, AuthenticateJWT, createTask);
  *       500:
  *         description: Server internal error
  */
-taskRoute.put('/:id',updateTaskValidate,AuthenticateJWT,  updateTask);
+taskRoute.put('/:id',AuthenticateJWT,updateTaskValidate,  updateTask);
 
 
 /**

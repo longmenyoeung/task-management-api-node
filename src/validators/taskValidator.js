@@ -6,14 +6,14 @@ export const createTaskValidate = [
         .trim()
         .notEmpty().withMessage("Title is required.")
         .isLength({min:5}).withMessage("Characters must be at least 5")
-        .isLength({max:50}).withMessage("Characters must be at most 50")
-        .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
+        .isLength({max:50}).withMessage("Characters must be at most 50"),
+        // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
     body("description")
         .trim()
         .notEmpty().withMessage("Title is required.")
         .isLength({min:5}).withMessage("Characters must be at least 5")
-        .isLength({max:50}).withMessage("Characters must be at most 50")
-        .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
+        .isLength({max:50}).withMessage("Characters must be at most 50"),
+        // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
     body("priority")
         .isIn(["high", "medium", "low"])
         .withMessage("Invalid priority level. Use 'high', 'medium', or 'low'."),
@@ -30,14 +30,14 @@ export const updateTaskValidate = [
         .trim()
         .notEmpty().withMessage("Title is required.")
         .isLength({min:5}).withMessage("Characters must be at least 5")
-        .isLength({max:50}).withMessage("Characters must be at most 50")
-        .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
+        .isLength({max:50}).withMessage("Characters must be at most 50"),
+        // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
     body("description")
         .trim()
         .notEmpty().withMessage("Title is required.")
         .isLength({min:5}).withMessage("Characters must be at least 5")
-        .isLength({max:50}).withMessage("Characters must be at most 50")
-        .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
+        .isLength({max:50}).withMessage("Characters must be at most 50"),
+        // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
     body("status")
         .isIn(["pending", "in-progress", "completed"])
         .withMessage("Invalid status. Use 'pending', 'in-progress', or 'completed'."),

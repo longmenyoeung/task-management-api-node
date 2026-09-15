@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
+import TaskModel from "./TaskModel.js";
 
 const projectSchema = new mongoose.Schema({
     name:{
@@ -20,6 +21,11 @@ const projectSchema = new mongoose.Schema({
 },{
     timestamps: true,
     collection: 'projects'
+});
+
+ // 'this' is the document instance, so this._id is the target projectId
+projectSchema.pre('deleteOne', { document: true, query: false }, async function() {
+    await TaskModel.deleteMany({ projectId: this._id });
 });
 
 projectSchema.plugin(mongoosePaginate);

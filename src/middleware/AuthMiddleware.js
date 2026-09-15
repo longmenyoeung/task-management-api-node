@@ -11,7 +11,7 @@ export const AuthenticateJWT = async (req, res, next) => {
             });
         }
         const token = authHeader.split(' ')[1];
-        const secret = process.env.JWT_SECRET;
+        const secret = process.env.JWT_SECRET; 
 
         const decoded = jwt.verify(token, secret);
 

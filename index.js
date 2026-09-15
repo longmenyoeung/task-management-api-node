@@ -9,11 +9,9 @@ import taskRoute from "./src/routes/Task.route.js";
 import cors from "cors";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from "./src/Swagger/swaggerConfig.js";
-import { notFound } from "./src/utils/ErrorMessage.js";
-import errorHandler from "./src/middleware/ErrorHandler.js";
+
 
 const app = express();
-// PORT (process.env.PORT is required by cloud hosts like Render, Railway, etc.)
 const port = process.env.PORT || process.env.PORT1 || process.env.PORT2 || 5000;
 
 // Middleware
@@ -58,16 +56,6 @@ app.use("/api/projects",  projectRoute);
 app.use("/api/tasks", taskRoute);
 
 
-
-
-
-//Fallback for unhandled endpoints
-// app.use((req, res, next) => {
-//     next(new notFound(`Can't find ${req.originalUrl} on this server!`));
-// });
-
-// Global error hadling middleware MUST be placed last
-// app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

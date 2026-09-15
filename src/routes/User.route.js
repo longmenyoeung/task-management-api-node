@@ -8,7 +8,7 @@ import {
 } from "../controllers/User.controller.js";
 import { AuthenticateJWT } from "../middleware/AuthMiddleware.js";
 import authorizeRoles from "../middleware/Authorizerole.js";
-import { createUserValidator } from "../validators/userValidator.js";
+import { createUserValidator, logiUserValidator } from "../validators/userValidator.js";
 
 const userRoute = express.Router();
 
@@ -99,7 +99,7 @@ userRoute.post("/register", createUserValidator, register);
  *       500:
  *         description: Something went wrong, please try again.
  */
-userRoute.post("/login", login);
+userRoute.post("/login",logiUserValidator, login);
 
 // ============= Private Routes =============
 

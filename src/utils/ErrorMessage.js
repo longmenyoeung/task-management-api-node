@@ -3,32 +3,32 @@ import ApiError from "./ApiError.js";
 
 class badRequest extends ApiError{
     constructor(message = "Bad Request."){
-        super(message, 400);
+        super(400, message);
     }
 }
 
 class internalServerError extends ApiError{
     constructor(message = "Internal Server error"){
-        super(message, 500);
+        super(500, message);
     }
 }
 
 class notFound extends ApiError{
     constructor (message ="Resource not found"){
-        super(message, 404);
+        super(404,message);
     }
 }
 
 
 class forbiden  extends ApiError{
     constructor (message = "Forbiden"){
-        super(message, 403);
+        super(403, message);
     }
 }
 
 class unauthorized extends ApiError{
     constructor (message = "Unauthorized"){
-        super(message, 401);
+        super(401, message);
     }
 }
 

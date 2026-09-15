@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import ProjectModel from "../models/ProjectModel.js";
 import TaskModel from "../models/TaskModel.js";
 import UserModel from "../models/UserModel.js";
-import { populate } from "dotenv";
 
 
 export const getListTask = async (req, res) => {
@@ -33,8 +32,8 @@ export const getListTask = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: 'Server internal error.',
-            error: error.message
+            message: "Internal server error.",
+            // error: error.message
         });
     }
 }
@@ -87,9 +86,9 @@ export const createTask = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Server internal error.",
-            error: error.message
-        });
+            message: "createTask failed. please try again.",
+            // error: error.message
+        }); 
     }
 }
 
@@ -106,10 +105,6 @@ export const updateTask = async (req, res) => {
         const task = await TaskModel.findById(id).populate('project').populate('assignedTo', "_id")
 
         if(!task) {return res.status(404).json({message:"Task not found."})}
-
-        // console.log("Logged user:", req.user._id);
-        // console.log("Project owner:", task.project.owner._id.toString());
-        // console.log("assingedTo User :",task.assignedTo._id.toString())
 
         if(req.user._id.toString() === task.project.owner._id.toString() || 
             req.user._id.toString() === task.assignedTo._id.toString()
@@ -131,14 +126,14 @@ export const updateTask = async (req, res) => {
             });
              
         }else{
-            return res.status(400).json({messge: "Only project owner and assigned user can update the task."}); 
+            return res.status(403).json({message: "Only project owner and assigned user can update the task."}); 
         }
 
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Server internal error.",
-            error: error.message
+            message: "updateTask failed. please try again.",
+            // error: error.message
         });
     }
 }
@@ -168,8 +163,8 @@ export const deleteTask = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Server internal error.",
-            error:error.message
+            message: "deleteTask failed. please try again.",
+            // error:error.message
         });
     }
 }

@@ -95,11 +95,21 @@ export const createTask = async (req, res) => {
 export const updateTask = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, status, priority } = req.body;
-        const updateData = { title, description, status, priority};
+        const { title, description, status, priority, assignedTo } = req.body;
+        const updateData = { title, description, status, priority, assignedTo};
 
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({message:"Invalid format ID provided."})
+        }
+
+        if(!mongoose.Types.ObjectId.isValid(assignedTo)){
+            return res.status(400).json({message: "Invalid format ID prodvide."});
+        }
+
+        const user = await UserModel.findById(assignedTo);
+
+        if(!user){
+            return res.status(404).json({message: "User not found."});
         }
 
         const task = await TaskModel.findById(id).populate('project').populate('assignedTo', "_id")

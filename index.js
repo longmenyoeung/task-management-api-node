@@ -9,6 +9,7 @@ import taskRoute from "./src/routes/Task.route.js";
 import cors from "cors";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from "./src/Swagger/swaggerConfig.js";
+import rateLimit from "express-rate-limit";
 
 
 const app = express();
@@ -23,8 +24,24 @@ app.use(
     })
 );
 app.use(morgan("combined"));
-app.use(express.json()); // json
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({limit: '10kb'})); // json
+app.use(express.urlencoded({ extended: true , limit: '10kb' }));
+
+//set rate limiting
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, //15 minutes
+    max: 250, // each IP can only make 250 requests per 15 minutes
+    standardHeaders: 'draft-7', // return rate limit info in the 'Ratelimit' headers
+    legacyHeaders: false , //disable the 'x-Ratelimit-Limit' headers
+    message: {
+        status: 429,
+        message: "Too many requests from this IP, please try again after 15 minutes."
+    }    
+});
+
+
+
+
 
 // Connect db
 connectDB();
@@ -51,9 +68,9 @@ app.get("/api/docs.json", (req, res) => {
 });
 
 // Connect routes
-app.use("/api/users", userRoute);
-app.use("/api/projects",  projectRoute);
-app.use("/api/tasks", taskRoute);
+app.use("/api/users", globalLimiter, userRoute);
+app.use("/api/projects", globalLimiter, projectRoute);
+app.use("/api/tasks", globalLimiter, taskRoute);
 
 
 

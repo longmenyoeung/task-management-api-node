@@ -6,7 +6,7 @@ const connnectDb = async () => {
     try {
 
         mongoose.connection.on("connected", () => {
-            console.log(`Mongoose with to mongodb.`);
+            console.log(`Mongoose connected with  mongodb.`);
         });
         
         mongoose.connection.on("error", (error) => {

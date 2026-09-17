@@ -10,7 +10,7 @@ export const createTaskValidate = [
         // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
     body("description")
         .trim()
-        .notEmpty().withMessage("Title is required.")
+        // .notEmpty().withMessage("Title is required.")
         .isLength({min:5}).withMessage("Characters must be at least 5")
         .isLength({max:100}).withMessage("Characters must be at most 100"),
         // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
@@ -34,7 +34,7 @@ export const updateTaskValidate = [
         // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
     body("description")
         .trim()
-        .notEmpty().withMessage("Title is required.")
+        // .notEmpty().withMessage("Title is required.")
         .isLength({min:5}).withMessage("Characters must be at least 5")
         .isLength({max:100}).withMessage("Characters must be at most 100"),
         // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),

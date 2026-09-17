@@ -38,14 +38,14 @@ export const register = async (req, res) => {
         });
 
 
-        const userRepsone = user.toObject();
-        delete userRepsone.password;
-        delete userRepsone.role;
+        const userResponse = user.toObject();
+        delete userResponse.password;
+        delete userResponse.role;
 
         return res.status(201).json({
             success: true, 
             message: `User registered successfully.`,
-            user: userRepsone
+            user: userResponse
         });
 
     } catch (error) {
@@ -183,7 +183,7 @@ export const deleteUser = async (req, res) => {
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({
                 success: false,
-                message: "Invalid format provide."
+                message: "Invalid format provided."
             });
         }
  

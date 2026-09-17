@@ -20,8 +20,8 @@ class notFound extends ApiError{
 }
 
 
-class forbiden  extends ApiError{
-    constructor (message = "Forbiden"){
+class forbidden  extends ApiError{
+    constructor (message = "Forbidden"){
         super(403, message);
     }
 }
@@ -32,4 +32,4 @@ class unauthorized extends ApiError{
     }
 }
 
-export {badRequest, internalServerError, notFound,forbiden, unauthorized};
+export {badRequest, internalServerError, notFound,forbidden, unauthorized};

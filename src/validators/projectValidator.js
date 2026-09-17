@@ -10,7 +10,7 @@ export const createProjectValidator  = [
         .isLength({min:3}).withMessage("Name must be more than 3 characters long."),
     body("description")
         .trim()
-        .notEmpty().withMessage("Project name is required.")
+        // .notEmpty().withMessage("Project name is required.")
         // .isAlpha('en-US').withMessage('Only english alphabets allowed.')
         .isLength({min:3}).withMessage("Description must be more than 3 characters long."),
     validate     
@@ -24,7 +24,7 @@ export const updateProjectValidator  = [
         .isLength({min:3}).withMessage("Name must be more than 3 characters long."),
     body("description")
         .trim()
-        .notEmpty().withMessage("Project name is required.")
+        // .notEmpty().withMessage("Project name is required.")
         // .isAlpha('en-US').withMessage('Only english alphabets allowed.')
         .isLength({min:3}).withMessage("Description must be more than 3 characters long."),
     validate     

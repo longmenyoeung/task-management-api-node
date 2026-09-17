@@ -93,7 +93,6 @@ export const updateProject = async (req, res) => {
 
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({
-                success: false,
                 message: 'Invalid ID format provided.'
             });
         }
@@ -105,7 +104,7 @@ export const updateProject = async (req, res) => {
         }   
 
         if(updateData.owner !== project.owner._id.toString()){
-            return res.status(403).json({success: false, message: "Only user whos created in this project can update."})
+            return res.status(403).json({message: "Only user whos created in this project can update."})
         }
 
         //update data
@@ -122,7 +121,6 @@ export const updateProject = async (req, res) => {
 
     }catch (error) {
         return res.status(500).json({
-            success: false,
             message:'updateProject failed. please try again.',
             // error:error.message
         });
@@ -145,7 +143,7 @@ export const deleteProject = async (req, res) => {
         }
 
         if(project.owner._id.toString() !== req.user._id.toString()){
-            return res.status(400).json({success: false, message: "Only user whos created in this project can delete."})
+            return res.status(403).json({success: false, message: "Only user whos created in this project can delete."})
         }
 
         //delete project 

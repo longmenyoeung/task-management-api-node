@@ -11,8 +11,6 @@ import { TaskValidate } from "../validators/taskValidator.js";
 const taskRoute = express.Router();
 
 
-
-
 /**
  * @swagger
  * tags:

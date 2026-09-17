@@ -6,7 +6,7 @@ import {
     updateTask
 } from "../controllers/Task.controller.js";
 import { AuthenticateJWT } from "../middleware/AuthMiddleware.js";
-import { createTaskValidate, updateTaskValidate } from "../validators/taskValidator.js";
+import { TaskValidate } from "../validators/taskValidator.js";
 
 const taskRoute = express.Router();
 
@@ -95,7 +95,7 @@ taskRoute.get('/',AuthenticateJWT, getListTask);
  *       500:
  *         description: Server internal error
  */
-taskRoute.post('/:id/create', AuthenticateJWT,createTaskValidate, createTask);
+taskRoute.post('/:id/create', AuthenticateJWT,TaskValidate, createTask);
 
 
 /**
@@ -156,7 +156,7 @@ taskRoute.post('/:id/create', AuthenticateJWT,createTaskValidate, createTask);
  *       500:
  *         description: Server internal error
  */
-taskRoute.put('/:id',AuthenticateJWT,updateTaskValidate,  updateTask);
+taskRoute.put('/:id',AuthenticateJWT,TaskValidate,  updateTask);
 
 
 /**

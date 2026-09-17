@@ -9,7 +9,7 @@ const authorizeRoles = (...allowedRoles) => {
 
         // Check if the user's role matches any of the allowed roles
         if(!allowedRoles.includes(req.user.role)){
-            return next(new ApiError)(403, "Access denied: Insufficient permissions.");
+            return next(new ApiError (403, "Access denied: Insufficient permissions."));
         }
         next();
     }

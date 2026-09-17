@@ -1,14 +1,12 @@
 import jwt from 'jsonwebtoken'
 import UserModel from '../models/UserModel.js';
+import ApiError from '../utils/ApiError.js';
 
 export const AuthenticateJWT = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         if(!authHeader || !authHeader.startsWith('Bearer ')){
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized."
-            });
+            throw new ApiError(401, "Unauthorized.")
         }
         const token = authHeader.split(' ')[1];
         const secret = process.env.JWT_SECRET; 
@@ -25,9 +23,6 @@ export const AuthenticateJWT = async (req, res, next) => {
         next();
 
     } catch (error) {
-        return res.status(401).json({
-            success: false,
-            message: "Expired or invalid tokens"
-        });
+        throw new ApiError(500, "Server internal error.")
     }
 }

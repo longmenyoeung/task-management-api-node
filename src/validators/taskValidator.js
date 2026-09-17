@@ -1,5 +1,5 @@
 import {body} from 'express-validator';
-import { validate } from './validate.js';
+import { validate } from '../middleware/Validation.js';
 
 export const createTaskValidate = [
     body("title")

@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 import  UserModel  from "../models/UserModel.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
+import ApiError from "../utils/ApiError.js";
 
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
     try {
         const {username, email, password, role} = req.body;
     
@@ -12,7 +13,8 @@ export const register = async (req, res) => {
           //find email if existed
         const existedEmail = await UserModel.findOne({email:email});
         if(existedEmail){
-            return res.status(400).json({message: 'User already existed.'});
+            // return res.status(400).json({message: 'User already existed.'});
+            throw new ApiError(400, "User already existed.")
         }
 
 
@@ -22,7 +24,8 @@ export const register = async (req, res) => {
         const adminExisted = await UserModel.findOne({role:"admin"});
         if(adminExisted){
             //use this message becuase i dont need hacker know that role admin already exist
-            return res.status(400).json({message: 'Something went wrong. please try again later.'});
+            //return res.status(400).json({message: 'Something went wrong. please try again later.'});
+            throw new ApiError(400, "Something went wrong. please try again later.")
         }
         }
 
@@ -49,45 +52,28 @@ export const register = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({
-            message: 'Internal server error.',
-            error:error.message
-        });
+       next(error)
     }
 }
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
     try {
         const {email, password} = req.body;
 
-        if(!email || !password) {
-            return res.status(400).json({
-                success : false,
-                message: "Email or password are required."
-            });
-        }
 
         const user = await UserModel.findOne({email});
         if(!user){
-            return res.status(404).json({
-                success: false,
-                message: "Email or password incorrect."
-            });
+            throw new ApiError(404, "Email or password incorrect.")
         }
 
         if(user.isActive === false){
-            return res.status(403).json({
-                success: false,
-                message: "This account has been deactived or deleted. please contect support."
-            })
+            throw new ApiError(403, "This account has been deactived or deleted. please contect support.")
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch){
-            return res.status(400).json({
-                success: false,
-                message: "Email or password incorrect."
-            })
+    
+            throw new ApiError(400, "Email or password incorrect.")
         }
 
         //sign token
@@ -106,15 +92,11 @@ export const login = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Server internal error.",
-            // error: error.message //Never send to user in Production.
-        })
+       next(error)
     }
 }
 
-export const getList = async (req, res) => {
+export const getList = async (req, res, next) => {
     try {
    
         const page = parseInt(req.query.page) || 1;
@@ -135,32 +117,22 @@ export const getList = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({
-            success:false,
-            message: 'Internal server error.',
-            error: error.message
-        });
+       next(error)
     }
 }
 
-export const searchById = async (req, res) => {
+export const searchById = async (req, res, next) => {
     try {
         const {id} = req.params;
         
         if(!mongoose.Types.ObjectId.isValid(id)){
-            return res.status(400).json({ 
-                success: false,
-                message: 'Invalid ID format provided.' 
-            });
+           throw new ApiError(400, "Invalid ID format provided.")
         }
         
         const user = await UserModel.findById(id).select('-password -role');
 
         if (!user) {
-            return res.status(404).json({ 
-                success: false,
-                message: 'User not found.' 
-            });
+           throw new ApiError(404, "user not found.")
         }
 
         return res.status(200).json({
@@ -170,9 +142,7 @@ export const searchById = async (req, res) => {
         });
         
     } catch (error) {
-        return res.status(500).json({
-            message: 'Internal server error.'
-        });
+       next(error)
     }
 }
 
@@ -181,18 +151,12 @@ export const deleteUser = async (req, res) => {
         const {id} = req.params;
 
         if(!mongoose.Types.ObjectId.isValid(id)){
-            return res.status(400).json({
-                success: false,
-                message: "Invalid format provided."
-            });
+            throw new ApiError(400, "Invalid ID format provided.")
         }
  
         const user = await UserModel.findByIdAndUpdate(id,{isActive: false}, {new:true,runValidators:true}).select('-password -role');
         if(!user){
-            return res.status(404).json({
-                success : false,
-                message: 'User not found.'
-            });
+            throw new ApiError(404, "User not found.")
         }
 
         return res.status(200).json({
@@ -202,10 +166,6 @@ export const deleteUser = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message : "Something went wrong. please try again later.",
-            // error:error.message //close message to front-end for more secure.
-        });
+       next(error);
     }
 }

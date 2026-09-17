@@ -1,15 +1,13 @@
 
 class ApiError extends Error {
-    constructor (statusCode, message , isOptinal = true){
+    constructor(statusCode, message, errors= null){
         super(message);
-        this.statusCode = statusCode;
-        
-        this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
 
-        this.isOptinal = isOptinal;
-      
+        this.statusCode = statusCode;
+        this.errors =errors;
+        this.success = false;
+
         Error.captureStackTrace(this, this.constructor);
-      
     }
 
 }

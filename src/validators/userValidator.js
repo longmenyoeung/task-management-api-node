@@ -1,5 +1,5 @@
 import {body} from 'express-validator'
-import { validate } from './validate.js'
+import { validate } from '../middleware/Validation.js';
 
 export const createUserValidator = [
     body('username')
@@ -15,6 +15,7 @@ export const createUserValidator = [
         .trim()
         .notEmpty()
         .withMessage("Email is required.")
+        .isString()
         .isEmail() 
         .withMessage("Email is invalid.")
         .normalizeEmail(), 

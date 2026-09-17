@@ -88,7 +88,7 @@ export const updateTask = async (req, res, next) => {
         }
 
         if(!mongoose.Types.ObjectId.isValid(assignedTo)){
-            throw new ApiError(400, "Invalid format ID prodvide.")
+            throw new ApiError(400, "Invalid format ID prodvided.")
         }
 
         const user = await UserModel.findById(assignedTo);

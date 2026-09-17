@@ -4,12 +4,12 @@ import ApiError from "../utils/ApiError.js";
 const authorizeRoles = (...allowedRoles) => {
     return (req, res, next) => {
         if(!req.user || !req.user.role){
-            throw new ApiError(403, "Access denied: No role provided");
+            return next(new ApiError(403, "Access denied: No role provided."))
         }
 
         // Check if the user's role matches any of the allowed roles
         if(!allowedRoles.includes(req.user.role)){
-            throw new ApiError(403, "Access denied : Insufficient permissions.")
+            return next(new ApiError)(403, "Access denied: Insufficient permissions.");
         }
         next();
     }

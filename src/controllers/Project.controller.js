@@ -28,13 +28,6 @@ export const createProject = async (req, res, next) => {
 
 export const getListProject = async (req, res, next) => {
     try {
-        // const projects = await ProjectModel.find({})
-        //                                     .populate('owner', 'username email')
-                                            
-        // if(projects.length===0){return res.json({message:'Project is empty.'})}
-        // let query ={};
-
-
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
  
@@ -49,7 +42,6 @@ export const getListProject = async (req, res, next) => {
 
         return res.status(200).json({
             success: true,
-            // appliedFilters: query,
             ...projects
         })
 

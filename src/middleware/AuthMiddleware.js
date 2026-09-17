@@ -16,13 +16,13 @@ export const AuthenticateJWT = async (req, res, next) => {
         // Fetch user from DB and attach to req.user
         const user = await UserModel.findById(decoded.sub).select('-password');
         if (!user) {
-            return res.status(404).json({ success: false, message: "User not found." });
+            throw new ApiError(404, "User not found.")
         }
         
         req.user= user;
         next();
 
     } catch (error) {
-        throw new ApiError(500, "Server internal error.")
+        next(error)
     }
 }

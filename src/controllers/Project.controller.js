@@ -105,7 +105,7 @@ export const deleteProject = async (req, res, next) => {
        
 
         if(!mongoose.Types.ObjectId.isValid(id)){
-            return res.status(400).json({message: 'Invalid ID format provided.'});
+            throw new ApiError(400, "Invalid ID format provided.");
         }
 
  
@@ -115,7 +115,7 @@ export const deleteProject = async (req, res, next) => {
         }
 
         if(project.owner._id.toString() !== req.user._id.toString()){
-            return res.status(403).json({success: false, message: "Only user whos created in this project can delete."})
+            throw new ApiError(403, "You are not authorized to delete this project.")
         }
 
         //delete project 

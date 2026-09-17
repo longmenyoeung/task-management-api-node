@@ -13,7 +13,6 @@ export const register = async (req, res, next) => {
           //find email if existed
         const existedEmail = await UserModel.findOne({email:email});
         if(existedEmail){
-            // return res.status(400).json({message: 'User already existed.'});
             throw new ApiError(400, "User already existed.")
         }
 
@@ -23,8 +22,6 @@ export const register = async (req, res, next) => {
         if(role === "admin"){
         const adminExisted = await UserModel.findOne({role:"admin"});
         if(adminExisted){
-            //use this message becuase i dont need hacker know that role admin already exist
-            //return res.status(400).json({message: 'Something went wrong. please try again later.'});
             throw new ApiError(400, "Something went wrong. please try again later.")
         }
         }
@@ -67,7 +64,7 @@ export const login = async (req, res, next) => {
         }
 
         if(user.isActive === false){
-            throw new ApiError(403, "This account has been deactived or deleted. please contect support.")
+            throw new ApiError(403, "This account has been deactivated or deleted. please contact support.")
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -132,7 +129,7 @@ export const searchById = async (req, res, next) => {
         const user = await UserModel.findById(id).select('-password -role');
 
         if (!user) {
-           throw new ApiError(404, "user not found.")
+           throw new ApiError(404, "User not found.")
         }
 
         return res.status(200).json({
@@ -146,7 +143,7 @@ export const searchById = async (req, res, next) => {
     }
 }
 
-export const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res, next) => {
     try {
         const {id} = req.params;
 

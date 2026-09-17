@@ -37,11 +37,9 @@ export const createTask = async (req, res, next) => {
 
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            // return res.status(400).json({ message: "Invalid project ID format." });
             throw new ApiError(400, "Invalid project ID format.")
         }
         if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
-            // return res.status(400).json({ message: "Invalid user ID format." });
             throw new ApiError(400, "Invalid user ID format.")
         }
 
@@ -105,7 +103,6 @@ export const updateTask = async (req, res, next) => {
 
         if(req.user._id.toString() === task.project.owner._id.toString() || 
             req.user._id.toString() === task.assignedTo._id.toString()
-            // || req.user.role === "admin"
         ){
             const updated = await TaskModel.findByIdAndUpdate(
                 id,
@@ -151,7 +148,6 @@ export const deleteTask = async (req, res, next) => {
         }else{
             throw new ApiError(403, "Only project owner and assigned user can delete the task.")
         }
-
 
     } catch (error) {
        next(error)

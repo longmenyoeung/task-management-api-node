@@ -11,6 +11,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from "./src/Swagger/swaggerConfig.js";
 import { globalLimiter } from "./src/middleware/rateLimiters.js";
 import errorHandler from "./src/middleware/ErrorHandler.js";
+import nosqlSanitizer from "./src/config/nosqlSanitizerConfig.js";
 
 
 const app = express();
@@ -26,7 +27,8 @@ app.use(
 );
 app.use(morgan("combined"));
 app.use(express.json({limit: '10kb'})); // json
-app.use(express.urlencoded({ extended: true , limit: '10kb' }));
+app.use(express.urlencoded({ extended: true , limit: '10kb' })); 
+app.use(nosqlSanitizer);
 
  
 // Connect db

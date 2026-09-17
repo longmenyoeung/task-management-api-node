@@ -6,13 +6,13 @@ export const createTaskValidate = [
         .trim()
         .notEmpty().withMessage("Title is required.")
         .isLength({min:5}).withMessage("Characters must be at least 5")
-        .isLength({max:50}).withMessage("Characters must be at most 50"),
+        .isLength({max:100}).withMessage("Characters must be at most 100"),
         // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
     body("description")
         .trim()
         .notEmpty().withMessage("Title is required.")
         .isLength({min:5}).withMessage("Characters must be at least 5")
-        .isLength({max:50}).withMessage("Characters must be at most 50"),
+        .isLength({max:100}).withMessage("Characters must be at most 100"),
         // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
     body("priority")
         .isIn(["high", "medium", "low"])
@@ -30,13 +30,13 @@ export const updateTaskValidate = [
         .trim()
         .notEmpty().withMessage("Title is required.")
         .isLength({min:5}).withMessage("Characters must be at least 5")
-        .isLength({max:50}).withMessage("Characters must be at most 50"),
+        .isLength({max:100}).withMessage("Characters must be at most 100"),
         // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
     body("description")
         .trim()
         .notEmpty().withMessage("Title is required.")
         .isLength({min:5}).withMessage("Characters must be at least 5")
-        .isLength({max:50}).withMessage("Characters must be at most 50"),
+        .isLength({max:100}).withMessage("Characters must be at most 100"),
         // .isAlpha('en-US').withMessage("Onlyb english alphabets allowed"),
     body("status")
         .isIn(["pending", "in-progress", "completed"])

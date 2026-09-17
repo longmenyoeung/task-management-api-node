@@ -39,9 +39,7 @@ const globalLimiter = rateLimit({
     }    
 });
 
-
-
-
+ 
 
 // Connect db
 connectDB();

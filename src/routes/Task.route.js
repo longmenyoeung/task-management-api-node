@@ -64,7 +64,6 @@ taskRoute.get('/',AuthenticateJWT, getListTask);
  *             required:
  *               - title
  *               - description
- *               - priority
  *               - assignedTo
  *             properties:
  *               title:
@@ -73,10 +72,6 @@ taskRoute.get('/',AuthenticateJWT, getListTask);
  *               description:
  *                 type: string
  *                 example: Add authentication middleware and security tokens
- *               priority:
- *                 type: string
- *                 enum: [low, medium, high]
- *                 example: high
  *               assignedTo:
  *                 type: string
  *                 description: MongoDB ObjectId of the assigned user

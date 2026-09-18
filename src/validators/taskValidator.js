@@ -9,14 +9,9 @@ export const TaskValidate = [
         .isLength({max:100}).withMessage("Characters must be at most 100"),
     body("description")
         .trim()
+        .optional()
         .isLength({min:5}).withMessage("Characters must be at least 5")
-        .isLength({max:100}).withMessage("Characters must be at most 100"),
-    body("status")
-        .isIn(["pending", "in-progress", "completed"])
-        .withMessage("Invalid status. Use 'pending', 'in-progress', or 'completed'."),
-    body("priority")
-        .isIn(["high", "medium", "low"])
-        .withMessage("Invalid priority level. Use 'high', 'medium', or 'low'."),
+        .isLength({max:500}).withMessage("Characters must be at most 500"),
     body("assignedTo")
         .trim()
         .optional()

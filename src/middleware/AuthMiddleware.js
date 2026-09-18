@@ -15,8 +15,8 @@ export const AuthenticateJWT = async (req, res, next) => {
 
         // Fetch user from DB and attach to req.user
         const user = await UserModel.findById(decoded.sub).select('-password');
-        if (!user) {
-            throw new ApiError(404, "User not found.")
+        if (!user || !user.isActive) {
+            throw new ApiError(401, "Account is inactive or has been deactivated.")
         }
         
         req.user= user;

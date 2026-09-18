@@ -32,26 +32,25 @@ export const getListTask = async (req, res, next) => {
 
 export const createTask = async (req, res, next) => {
     try {
-        const { title, description, priority, assignedTo} = req.body;
-        const { id } = req.params;
+        const { title, description,assignedTo} = req.body;
+        const { productId } = req.params;
 
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
             throw new ApiError(400, "Invalid project ID format.")
         }
         if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
             throw new ApiError(400, "Invalid user ID format.")
         }
 
-
-        const project = await ProjectModel.findById(id);
+        const project = await ProjectModel.findById(productId).populate("owner", "_id");
         if (!project) throw new ApiError(404, "Project not found.");
 
         if(project.owner._id.toString() === assignedTo.toString()){
             throw new ApiError(400, "The assigned user cannot be the same as the project owner.")
         }
 
-        const user = await UserModel.findById(assignedTo);
+        const user = await UserModel.findById(assignedTo).select("-password");
         if (!user) throw new ApiError(404, "User not found.");
 
         if(req.user._id.toString() !== project.owner._id.toString()){
@@ -61,7 +60,6 @@ export const createTask = async (req, res, next) => {
         const task = await TaskModel.create({
             title,
             description,
-            priority,
             project,
             assignedTo
         });

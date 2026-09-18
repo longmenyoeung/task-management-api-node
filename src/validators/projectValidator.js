@@ -9,6 +9,7 @@ export const ProjectValidator  = [
         .isLength({min:3}).withMessage("Name must be more than 3 characters long."),
     body("description")
         .trim()
+        .optional()
         .isLength({min:3}).withMessage("Description must be more than 3 characters long."),
     validate     
 ]
